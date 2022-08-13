@@ -1,6 +1,6 @@
 class MovieEntity {
   final String name;
-  final String imageUrl;
+  final String? imageUrl;
   final double popularity;
   final int likes;
 

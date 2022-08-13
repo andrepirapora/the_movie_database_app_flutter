@@ -1,6 +1,6 @@
 class MovieViewModel {
   final String name;
-  final String imageUrl;
+  final String? imageUrl;
   final double popularity;
   final int likes;
 

@@ -13,15 +13,17 @@ class RemoteLoadMovie implements LoadMovie {
   @override
   Future<MovieEntity> load() async {
     try {
+      // descomente essa linha se voce tiver uma API KEY
       // final json = await client.request(url: url, method: 'get');
-      final json = mockResponse();
+      final json = await mockResponse();
       return RemoteMovieModel.fromJson(json).toEntity();
     } catch (error) {
       throw DomainError.unexpected;
     }
   }
 
-  Map mockResponse() {
+  Future<Map> mockResponse() async {
+    await Future.delayed(const Duration(seconds: 3));
     return {
       "adult": false,
       "backdrop_path":

@@ -2,7 +2,7 @@ import '../../domain/entities/entities.dart';
 
 class RemoteMovieModel {
   final String name;
-  final String imageUrl;
+  final String? imageUrl;
   final double popularity;
   final int likes;
 

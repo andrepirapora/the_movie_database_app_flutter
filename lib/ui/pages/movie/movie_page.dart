@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:the_movie_db/ui/pages/movie/blocs/load_similar_movies_bloc.dart';
-import 'package:the_movie_db/ui/pages/movie/blocs/load_similar_movies_bloc.dart';
 
 import 'blocs/load_movie_bloc.dart';
+import 'widgets/widgets.dart';
 
-class MoviePage extends StatelessWidget {
+class MoviePage extends StatefulWidget {
   const MoviePage({Key? key}) : super(key: key);
+
+  @override
+  State<MoviePage> createState() => _MoviePageState();
+}
+
+class _MoviePageState extends State<MoviePage> {
+  final _favoriteNotifier = ValueNotifier<bool>(true);
+
+  @override
+  void dispose() {
+    _favoriteNotifier.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,26 +34,37 @@ class MoviePage extends StatelessWidget {
                     SliverAppBar(
                       expandedHeight: 400,
                       flexibleSpace: FlexibleSpaceBar(
-                        background: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            Image.network(
-                              movie.imageUrl,
-                              fit: BoxFit.cover,
-                            ),
-                            const DecoratedBox(
-                              decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                colors: [
-                                  Colors.black,
-                                  Colors.transparent,
-                                ],
-                                begin: Alignment.bottomCenter,
-                                end: Alignment.topCenter,
-                              )),
-                            ),
-                          ],
-                        ),
+                        background: TweenAnimationBuilder<double>(
+                            duration: const Duration(milliseconds: 1200),
+                            curve: Curves.easeOut,
+                            tween: Tween(begin: 0.0, end: 1.0),
+                            builder: (context, value, _) {
+                              print(value);
+                              return Transform.scale(
+                                scale: value,
+                                child: Stack(
+                                  fit: StackFit.expand,
+                                  children: [
+                                    if (movie.imageUrl != null)
+                                      Image.network(
+                                        movie.imageUrl!,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    const DecoratedBox(
+                                      decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                        colors: [
+                                          Colors.black,
+                                          Colors.transparent,
+                                        ],
+                                        begin: Alignment.bottomCenter,
+                                        end: Alignment.topCenter,
+                                      )),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }),
                       ),
                     ),
                     SliverList(
@@ -64,7 +87,19 @@ class MoviePage extends StatelessWidget {
                                           fontWeight: FontWeight.bold,
                                         ),
                                   ),
-                                  const Icon(Icons.favorite),
+                                  ValueListenableBuilder<bool>(
+                                      valueListenable: _favoriteNotifier,
+                                      builder: (context, isFavorite, _) {
+                                        return IconButton(
+                                          icon: Icon(isFavorite
+                                              ? Icons.favorite
+                                              : Icons.favorite_border),
+                                          onPressed: () {
+                                            _favoriteNotifier.value =
+                                                !_favoriteNotifier.value;
+                                          },
+                                        );
+                                      }),
                                 ],
                               ),
                               const SizedBox(height: 10),
@@ -90,30 +125,7 @@ class MoviePage extends StatelessWidget {
                                   )
                                 ],
                               ),
-                              BlocBuilder<LoadSimilarMoviesBloc,
-                                  LoadSimilarMoviesState>(
-                                builder: (context, state) {
-                                  if (state is LoadSimilarMovieSuccess) {
-                                    return ListView.builder(
-                                        itemBuilder: (context, index) {
-                                      final movie = state.movies[index];
-                                      return ListTile(
-                                        title: Text(movie.name),
-                                        subtitle:
-                                            Text("${movie.likes} curtidas"),
-                                      );
-                                    });
-                                  }
-                                  if (state is LoadMovieError) {
-                                    return Center(
-                                      child: Text(state.error),
-                                    );
-                                  }
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                },
-                              ),
+                              const SimilarMovies(),
                             ],
                           ),
                         ),
