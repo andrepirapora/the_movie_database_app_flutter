@@ -38,4 +38,10 @@ void main() {
 
     expect(future, throwsA(DomainError.unexpected));
   });
+
+  test('Should return MovieEntity if HttpClient returns 200', () async {
+    final movie = await sut.load();
+
+    expect(movie.name, "any_name");
+  });
 }
