@@ -3,6 +3,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 import 'package:the_movie_db/data/http/http.dart';
 import 'package:the_movie_db/data/usecases/usecases.dart';
+import 'package:the_movie_db/domain/helpers/helpers.dart';
 
 class HttpClientSpy extends Mock implements HttpClient {
   When mockLoadCall() =>
@@ -47,5 +48,13 @@ void main() {
     final list = await sut.load();
 
     expect(list[0].name, "Darna! Ang Pagbabalik");
+  });
+
+  test("Should throws DomainError.unexpected if HttpClient throws", () async {
+    httpClient.mockRequestError(HttpError.serverError);
+
+    final future = sut.load();
+
+    expect(future, throwsA(DomainError.unexpected));
   });
 }
