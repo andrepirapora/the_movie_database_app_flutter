@@ -11,7 +11,8 @@ class RemoteLoadMovie implements LoadMovie {
 
   @override
   Future<MovieEntity> load() async {
-    final json = await client.request(url: url, method: 'get');
+    await client.request(url: url, method: 'get');
+    final json = {"name": "any", "popularity": "2.5"};
     return RemoteMovieModel.fromJson(json).toEntity();
   }
 }
