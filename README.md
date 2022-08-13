@@ -1,4 +1,6 @@
 **ATENÇÃO**
+<br />
+<br />
 Para que todos os testes passem, você precisa descomentar a linha de código nos usecase's na camada
 Data onde a chamada para o HttpAdapter é feito.
 <br />
