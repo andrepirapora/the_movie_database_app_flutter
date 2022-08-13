@@ -4,11 +4,12 @@ import 'package:http/http.dart';
 
 import '../../data/http/http.dart';
 
-class HttpAdapter {
+class HttpAdapter extends HttpClient {
   final Client client;
 
-  const HttpAdapter({required this.client});
+  HttpAdapter({required this.client});
 
+  @override
   Future<dynamic> request({
     required String url,
     required String method,
