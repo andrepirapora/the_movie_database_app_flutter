@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:the_movie_db/ui/pages/movie/blocs/load_similar_movies_bloc.dart';
+import 'package:the_movie_db/ui/pages/movie/blocs/load_similar_movies_bloc.dart';
 
 import 'blocs/load_movie_bloc.dart';
 
@@ -88,8 +90,29 @@ class MoviePage extends StatelessWidget {
                                   )
                                 ],
                               ),
-                              SizedBox(
-                                height: 900,
+                              BlocBuilder<LoadSimilarMoviesBloc,
+                                  LoadSimilarMoviesState>(
+                                builder: (context, state) {
+                                  if (state is LoadSimilarMovieSuccess) {
+                                    return ListView.builder(
+                                        itemBuilder: (context, index) {
+                                      final movie = state.movies[index];
+                                      return ListTile(
+                                        title: Text(movie.name),
+                                        subtitle:
+                                            Text("${movie.likes} curtidas"),
+                                      );
+                                    });
+                                  }
+                                  if (state is LoadMovieError) {
+                                    return Center(
+                                      child: Text(state.error),
+                                    );
+                                  }
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                },
                               ),
                             ],
                           ),
@@ -100,8 +123,8 @@ class MoviePage extends StatelessWidget {
                 );
               }
               if (state is LoadMovieError) {
-                return const Center(
-                  child: Text("Um erro inesperado aconteceu :("),
+                return Center(
+                  child: Text(state.error),
                 );
               }
               return const Center(
