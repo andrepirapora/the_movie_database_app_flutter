@@ -1,4 +1,5 @@
 import '../../../domain/entities/entities.dart';
+import '../../../domain/helpers/helpers.dart';
 import '../../../domain/usecases/usecases.dart';
 import '../../http/http.dart';
 import '../../models/models.dart';
@@ -11,8 +12,11 @@ class RemoteLoadMovie implements LoadMovie {
 
   @override
   Future<MovieEntity> load() async {
-    await client.request(url: url, method: 'get');
-    final json = {"name": "any", "popularity": "2.5"};
-    return RemoteMovieModel.fromJson(json).toEntity();
+    try {
+      final json = await client.request(url: url, method: 'get');
+      return RemoteMovieModel.fromJson(json).toEntity();
+    } catch (error) {
+      throw DomainError.unexpected;
+    }
   }
 }
