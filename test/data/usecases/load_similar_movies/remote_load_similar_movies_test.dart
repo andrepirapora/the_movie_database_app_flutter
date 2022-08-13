@@ -42,4 +42,10 @@ void main() {
 
     verify(() => httpClient.request(url: url, method: "get"));
   });
+
+  test("Should return an list of MovieEntity if HttpClient succeeds", () async {
+    final list = await sut.load();
+
+    expect(list[0].name, "Darna! Ang Pagbabalik");
+  });
 }
